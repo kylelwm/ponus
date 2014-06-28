@@ -48,18 +48,26 @@ window.onload = function() {
 
 
 
-
+<!--
 <h2>Demonstration</h2>
 {% if latest_module_list %}
-  <form name="form1" action="#" onsubmit="return false;">
+  <form name="form1" action="module_form.asp" method="get" onsubmit="return false;">
     <div>
       <input type="text" name="search_select"><br>
       <select name="select_module" size="10">
         {% for module in latest_module_list %}
-        <option draggable="true" value="{{ module.module_code }}">{{module.module_code}} : {{module.module_title}}</option>
+        <option value="{{ module.module_code }}">{{module.module_code}} : {{module.module_title}}</option>
         {% endfor %}
       </select>
     </div>
   </form>
   {% endif %}
+-->
+
+<h2>Select a module</h2>
+
+
+
+
+
 {% endblock %}

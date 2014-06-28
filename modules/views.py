@@ -1,6 +1,8 @@
 from django.shortcuts import render
-
-from modules.models import Module
+from django.shortcuts import render_to_response
+from modules.models import *
+from django.template import RequestContext
+from django import forms
 
 # Create your views here.
 
@@ -21,3 +23,15 @@ def sorttable(request):
 	latest_module_list = Module.objects.all()
 	context = {'latest_module_list': latest_module_list}
 	return render(request, 'modules/sorttable.html', context)
+	
+def addmodule(request):
+	context = RequestContext(request)
+	
+	if request.method == 'POST':
+		form = Module_Form(request.POST)
+		if form.is_valid():
+			form.save(commit=False)
+			return index(request)
+	else:
+		form = Module_Form()
+	return render_to_response('addmodule.html', {'form': form}, context)
