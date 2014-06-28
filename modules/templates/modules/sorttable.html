@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load staticfiles %}
+{% block head %}
+
+<script type="text/javascript" src="{% static "jquery/jquery-latest.js" %}"></script> 
+<script type="text/javascript" src="{% static "jquery/jquery.tablesorter.js" %}"></script> 
+<script type="text/javascript">
+$(function(){
+				$("#modules").tablesorter();
+			}); 	
+</script>
+{% endblock %}
+
+{% block content %}
+
+<table cellspacing="1" id="modules" class="tablesorter">
+<thead>
+<tr>
+	<th>Code</th>
+	<th>Description</th>
+	<th>MC</th>
+	<th>Department</th>
+</tr>
+</thead>
+<tbody>
+{% if latest_module_list %}
+{% for module in latest_module_list %}
+<tr>
+	<td>{{ module.module_code }}</td>
+	<td>{{ module.module_title }}<br>
+		{{ module.module_description}}</td>
+	<td>{{ module.module_credit }}</td>
+	<td>{{ module.department }}</td>
+</tr>
+{% endfor %}
+{% endif %}
+</tbody>
+</table>
+
+{% endblock %}

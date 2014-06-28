@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load staticfiles %}
+{% block content %}
+{% if latest_module_list %}
+	<ul>
+	{% for module in latest_module_list %}
+		<li>
+		
+			<h1>{{ module.module_code }}</h1>
+		
+			<details>
+				<summary>{{module.module_title}}</summary>
+				<p>Department: {{module.department}}</p>
+				<p>Description: {{module.module_description}}</p>
+				<p>Credit: {{module.module_credit}}</p>
+				<p>Prerequisite: {{module.prerequisite}}</p>
+				<p>Preclusion: {{module.preclusion}}</p>
+				<p>Exam Date: {{module.exam_date}}</p>
+				<p>Exam Duration: {{module.exam_duration}}</p>
+				<p>Types: {{module.types}}</p>
+			</details>
+		</li>
+	{% endfor %}
+	</ul>
+{% endif %}
+{% endblock %}
