@@ -3,6 +3,8 @@ from django.shortcuts import render_to_response
 from modules.models import *
 from django.template import RequestContext
 from django import forms
+from django.contrib.auth.models import User
+from django.db.models.query import EmptyQuerySet
 
 # Create your views here.
 
@@ -26,12 +28,30 @@ def sorttable(request):
 	
 def addmodule(request):
 	context = RequestContext(request)
-	
+	palette_modules = UserModule.objects.filter(user=request.user)
+	semesterusermodulelink = Semester_UserModule_Link.objects.filter(user=request.user)
+	#CREATE SEMESTER IF IT DOESN'T EXIST STILL
+	if isinstance(Semester.objects.filter(user=request.user), EmptyQuerySet):
+		Semester.objects.create(semester_name='Semester 1', user=request.user)
+		Semester.objects.create(semester_name='Semester 2', user=request.user)
+		Semester.objects.create(semester_name='Semester 3', user=request.user)
+		Semester.objects.create(semester_name='Semester 4', user=request.user)
+		Semester.objects.create(semester_name='Semester 5', user=request.user)
+		Semester.objects.create(semester_name='Semester 6', user=request.user)
+
 	if request.method == 'POST':
 		form = Module_Form(request.POST)
 		if form.is_valid():
-			form.save(commit=False)
-			return index(request)
+			obj = form.save(commit=False)
+			
+			# Uncomment this part later
+			if request.user.is_authenticated():
+				obj.user = request.user
+			else:
+				obj.user = User.objects.get(username__exact='Ming')
+			form.save()
+
+			return render_to_response('addmodule.html', {'form': form}, context)
 	else:
 		form = Module_Form()
 	return render_to_response('addmodule.html', {'form': form}, context)

@@ -1,8 +1,14 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
+from allauth.account.models import EmailAddress
+from allauth.socialaccount.models import SocialAccount
+from django_facebook import *
+import hashlib
 
 # Create your models here.
+AUTH_USER_MODEL = 'django_facebook.FacebookCustomUser'
+AUTH_PROFILE_MODULE = 'django_facebook.FacebookProfile'
 
 class Module(models.Model):
 
@@ -42,21 +48,62 @@ class Semester(models.Model):
 		return self.semester_name
 	
 	semester_name = models.CharField(max_length=20, null=True, blank=True)
+	user = models.ForeignKey(User, blank=True, related_name="semester")
+
+	class Meta:
+		unique_together = ("user",)
 
 class UserModule(models.Model):
-
-	def __str__(self):
-		return module.module_code
 		
 	module = models.ForeignKey(Module)
+	user = models.ForeignKey(User, blank=True, related_name="usermodule")
+
+	class Meta:
+		unique_together = ("user",)
+
+#LINK BTWN SEMESTER AND USERMODULES IDENTIFIED BY USER
+class Semester_UserModule_Link(models.Model):
+	usermodule = models.ForeignKey(UserModule)
 	semester = models.ForeignKey(Semester)
-	
+	user = models.ForeignKey(User, blank=True, related_name="link")
+
+	class Meta:
+		unique_together = ("user",)
+
+#TO CREATE USERMODULES
 class Module_Form(forms.ModelForm):
 	module = forms.ModelChoiceField(queryset=Module.objects.all().order_by("module_code"))
 	
 	class Meta:
 		model = UserModule
-		exclude = ('semester',)
+		exclude = ('user',)
+		
+#FACEBOOK EDIT
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, related_name='profile')
+ 
+    def __unicode__(self):
+        return "{}'s profile".format(self.user.username)
+ 
+    class Meta:
+        db_table = 'user_profile'
+ 
+    def account_verified(self):
+        if self.user.is_authenticated:
+            result = EmailAddress.objects.filter(email=self.user.email)
+            if len(result):
+                return result[0].verified
+        return False
+    def profile_image_url(self):
+        fb_uid = SocialAccount.objects.filter(user_id=self.user.id, provider='facebook')
+     
+        if len(fb_uid):
+            return "http://graph.facebook.com/{}/picture?width=40&height=40".format(fb_uid[0].uid)
+     
+        return "http://www.gravatar.com/avatar/{}?s=40".format(hashlib.md5(self.user.email).hexdigest())
+
+ 
+User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
 		
 		
 		

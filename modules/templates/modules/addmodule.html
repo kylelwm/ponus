@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load staticfiles %}
+{% block content %}
+<script type="text/javascript"><!--
+/*
+This simulates the multiple letter option text search in Firefox 1+ and NS7.1+.
+
+This works in Firefox (Windows, Linux, and Mac), NS6.0+, IE4+/Win, Opera 6+, 
+Safari 1.2+, and IE5.1+/Mac.
+
+It crashes early versions of NS4.x.
+Later versions of NS4.x don't scroll through when the new option is selected 
+by the script. Safari 1.0, Konqueror 3.x, and iCab 3 exhibit the same behavior 
+as the later versions of NS4.x.
+*/
+
+function getOptSearchKeys(sbox) {
+  var optText,found=0;
+
+  var sel = document.forms.form1.select_module;
+  var val = sbox.value.toLowerCase();
+  if(val == '') return;
+ 
+  var i=0;
+  while((i<sel.options.length) && !found) {
+    optText=sel.options[i].text.substring(0,val.length).toLowerCase();
+    if(val == optText) {
+      sel.selectedIndex=i;
+      found=1;
+    }
+    i++;
+  }
+}
+
+window.onload = function() {
+  var appName = navigator.appName.toLowerCase();
+  var appVersion = parseInt(navigator.appVersion);
+  if(document.forms && !((appName == 'netscape') && (appVersion == 4))) {
+    document.forms.form1.search_select.onkeyup = function() {
+      getOptSearchKeys(this);
+    }
+  }
+}
+// -->
+</script>
+
+
+
+
+<!--
+<h2>Demonstration</h2>
+{% if latest_module_list %}
+  <form name="form1" action="module_form.asp" method="get" onsubmit="return false;">
+    <div>
+      <input type="text" name="search_select"><br>
+      <select name="select_module" size="10">
+        {% for module in latest_module_list %}
+        <option value="{{ module.module_code }}">{{module.module_code}} : {{module.module_title}}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </form>
+  {% endif %}
+-->
+
+<h2>Select a module</h2>
+<form action="addmodule/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Add" />
+</form>
+
+
+
+{% endblock %}
