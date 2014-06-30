@@ -28,16 +28,12 @@ def sorttable(request):
 	
 def addmodule(request):
 	context = RequestContext(request)
-	palette_modules = UserModule.objects.filter(user=request.user)
+	usermodules = UserModule.objects.filter(user=request.user)
 	semesterusermodulelink = Semester_UserModule_Link.objects.filter(user=request.user)
 	#CREATE SEMESTER IF IT DOESN'T EXIST STILL
-	if isinstance(Semester.objects.filter(user=request.user), EmptyQuerySet):
-		Semester.objects.create(semester_name='Semester 1', user=request.user)
-		Semester.objects.create(semester_name='Semester 2', user=request.user)
-		Semester.objects.create(semester_name='Semester 3', user=request.user)
-		Semester.objects.create(semester_name='Semester 4', user=request.user)
-		Semester.objects.create(semester_name='Semester 5', user=request.user)
-		Semester.objects.create(semester_name='Semester 6', user=request.user)
+	if not Semester.objects.filter(user=request.user).exists():
+		for x in range(1, 7):
+			Semester.objects.create(semester_name='Semester ' + str(x), user=request.user)
 
 	if request.method == 'POST':
 		form = Module_Form(request.POST)
@@ -51,7 +47,14 @@ def addmodule(request):
 				obj.user = User.objects.get(username__exact='Ming')
 			form.save()
 
-			return render_to_response('addmodule.html', {'form': form}, context)
+			return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules, 'semesterusermodulelink':semesterusermodulelink}, context)
 	else:
 		form = Module_Form()
-	return render_to_response('addmodule.html', {'form': form}, context)
+	return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules, 'semesterusermodulelink':semesterusermodulelink}, context)
+
+def update(request):
+	context = RequestContext(request)
+	if request.method == 'GET':
+		request.GET['']
+		
+		return render(request, 'modules/index.html', context)	

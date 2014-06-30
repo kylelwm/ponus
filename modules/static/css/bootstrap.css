@@ -18,7 +18,10 @@ aside,
 details,
 figcaption,
 figure,
-footer,
+footer {
+  position: fixed;
+  bottom: 30px;
+}
 header,
 hgroup,
 main,

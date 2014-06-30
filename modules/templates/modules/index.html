@@ -75,9 +75,10 @@
       </div>
     </div>
     {% endblock %}
+    {% block content %}
     <div class="container">
       <!-- Example row of columns -->
-      {% block content %}
+
       <div class="row">
         <div class="col-md-4">
           <h2>View Modules in Table form here!</h2>
@@ -107,7 +108,7 @@
           </p>
         </div>
       </div>
-      {% endblock %}
+
       <hr>
 
       <footer>
@@ -116,7 +117,9 @@
         Leong Wei Ming</a> , <a href="mailto:jingrong@nus.edu.sg?Subject=Queries%20about%20Path%20of%20NUS" target="_top">
         Lim Jing Rong</a> </p>
       </footer>
-    </div> <!-- /container -->        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    </div> <!-- /container -->        
+    {% endblock %}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 										<!--REMOVES CONFLICT -->
 										<script>var $jq1 = jQuery.noConflict();</script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.0.min.js"><\/script>')</script>

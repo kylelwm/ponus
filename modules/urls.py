@@ -7,4 +7,6 @@ urlpatterns = patterns('',
 	url(r'^modulelist', views.modulelist, name='modulelist'),
 	url(r'^addmodule', views.addmodule, name='addmodule'),
 	url(r'^sorttable', views.sorttable, name='sorttable'),
+	url(r'^update', views.update, name='update'),
+
 )

@@ -1,76 +1,204 @@
 <!DOCTYPE html>
 {% extends "index.html" %}
 {% load staticfiles %}
-{% block content %}
-<script type="text/javascript"><!--
-/*
-This simulates the multiple letter option text search in Firefox 1+ and NS7.1+.
 
-This works in Firefox (Windows, Linux, and Mac), NS6.0+, IE4+/Win, Opera 6+, 
-Safari 1.2+, and IE5.1+/Mac.
+{% block head %}
+<style>
 
-It crashes early versions of NS4.x.
-Later versions of NS4.x don't scroll through when the new option is selected 
-by the script. Safari 1.0, Konqueror 3.x, and iCab 3 exhibit the same behavior 
-as the later versions of NS4.x.
-*/
+#leftsidepage{
+  padding-right: 0px;
+  border-style: solid;
+  border-width: 1px;
+}
 
-function getOptSearchKeys(sbox) {
-  var optText,found=0;
+#selectingform {
+    position: fixed;
+    top: 125px;
+    left: 20px;
+}
+#palette {
+  position: fixed;
+  top: 250px;
+}
 
-  var sel = document.forms.form1.select_module;
-  var val = sbox.value.toLowerCase();
-  if(val == '') return;
+#semesters {
+  position: fixed;
+  top: 150px;
+  left: 400px;
+  padding-bottom: 625px;
+  border-style: solid;
+  border-width: 1px; 
+}
+
+.list {
+    background-color: lightblue;
+
+}
  
-  var i=0;
-  while((i<sel.options.length) && !found) {
-    optText=sel.options[i].text.substring(0,val.length).toLowerCase();
-    if(val == optText) {
-      sel.selectedIndex=i;
-      found=1;
-    }
-    i++;
-  }
+.items .ui-selected {
+    background: red;
+    color: white;
+    font-weight: bold;
+}
+ 
+.items {
+    list-style-type: none;
+    margin-left: 0px;
+    width: 250px;
+    float: left;
+    border-style: solid;
+    border-width: 1px;
+}
+ 
+.items li {
+    width: 200px;
+    margin: 2px;
+    padding: 2px;
+    cursor: pointer;
+    border-radius: 3px;
+}
+ 
+.g {
+    background-color: lightgreen;
+}
+ 
+.o {
+    background-color: orange;
+}
+ 
+.highlight {
+    border: 2px solid red;
+    font-weight: bold;
 }
 
-window.onload = function() {
-  var appName = navigator.appName.toLowerCase();
-  var appVersion = parseInt(navigator.appVersion);
-  if(document.forms && !((appName == 'netscape') && (appVersion == 4))) {
-    document.forms.form1.search_select.onkeyup = function() {
-      getOptSearchKeys(this);
-    }
-  }
-}
-// -->
+</style>
+{% endblock %}
+
+{% block title %}
+
+<div id= "leftsidepage">
+  <div id= "selectingform">
+    <h2>Select a module</h2>
+    <form action="addmodule/" method="post">
+       {% csrf_token %}
+      {{ form }}
+       <input type="submit" value="Add" />
+    </form>
+  </div>
+
+  <div id="palette">
+  {% if usermodules %}
+   <ul id = "usermodules" class="items">
+      Palette
+   {% for module in usermodules %}
+     <li id = "modules_{{ forloop.counter }}"class="list">    
+        <h1>{{ module.module.module_code }}</h1>
+      </li>
+   {% endfor %}
+   </ul>
+  {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script type="text/javascript" src="http://www.pureexample.com/js/lib/jquery.ui.touch-punch.min.js"></script>
+
+<script>
+$(function () {
+        $("#usermodules,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").sortable({
+                connectWith: "#usermodules,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6",
+                start: function (event, ui) {
+                        ui.item.toggleClass("highlight");
+                },
+                stop: function (event, ui) {
+                        ui.item.toggleClass("highlight");
+                        
+                        var data = $(this).sortable('serialize');
+                  // POST to server using $.post or $.ajax
+                    $.ajax({
+                     data: data,
+                      type: 'GET',
+                     url: '/modules/update'
+                   });
+                }
+
+        });
+        $("#usermodules,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").disableSelection();
+});
 </script>
 
 
+<div id = 'semesters'>
 
+   <ul id = "sem1" class="items">
+   Semester 1
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 1' %}
+      <li id='sem1_{{ forloop.counter }}' class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 
-<!--
-<h2>Demonstration</h2>
-{% if latest_module_list %}
-  <form name="form1" action="module_form.asp" method="get" onsubmit="return false;">
-    <div>
-      <input type="text" name="search_select"><br>
-      <select name="select_module" size="10">
-        {% for module in latest_module_list %}
-        <option value="{{ module.module_code }}">{{module.module_code}} : {{module.module_title}}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </form>
-  {% endif %}
--->
+  <ul id = "sem2" class="items">
+   Semester 2
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 2' %}
+      <li id = "sem2_{{ forloop.counter }}" class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 
-<h2>Select a module</h2>
-<form action="addmodule/" method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Add" />
-</form>
+  <ul id = "sem3" class="items">
+   Semester 3
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 3' %}
+      <li id = "sem3_{{ forloop.counter }}" class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 
+  <ul id = "sem4" class="items">
+   Semester 4
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 4' %}
+      <li id = "sem4_{{ forloop.counter }}" class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 
+  <ul id = "sem5" class="items">
+   Semester 5
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 5' %}
+      <li id = "sem5_{{ forloop.counter }}" class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
 
+  <ul id = "sem6" class="items">
+   Semester 6
+  {% for link in semesterusermodulelink %}
+    {% if link.semester.semester_name == 'Semester 6' %}
+      <li id = "sem6_{{ forloop.counter }}" class="list">
+        <h1>{{ link.usermodule.module.module_code }}</h1>
+      </li>
+    {% endif %}
+  {% endfor %}
+  </ul>
+
+</div>
 {% endblock %}

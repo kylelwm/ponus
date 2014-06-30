@@ -50,25 +50,20 @@ class Semester(models.Model):
 	semester_name = models.CharField(max_length=20, null=True, blank=True)
 	user = models.ForeignKey(User, blank=True, related_name="semester")
 
-	class Meta:
-		unique_together = ("user",)
-
 class UserModule(models.Model):
-		
+	def __str__(self):
+		return self.module.module_code
+
 	module = models.ForeignKey(Module)
 	user = models.ForeignKey(User, blank=True, related_name="usermodule")
 
-	class Meta:
-		unique_together = ("user",)
-
 #LINK BTWN SEMESTER AND USERMODULES IDENTIFIED BY USER
 class Semester_UserModule_Link(models.Model):
+	def __str__(self):
+		return self.semester.semester_name +  " / " + self.usermodule.module.module_code
 	usermodule = models.ForeignKey(UserModule)
 	semester = models.ForeignKey(Semester)
 	user = models.ForeignKey(User, blank=True, related_name="link")
-
-	class Meta:
-		unique_together = ("user",)
 
 #TO CREATE USERMODULES
 class Module_Form(forms.ModelForm):

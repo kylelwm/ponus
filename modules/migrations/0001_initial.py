@@ -45,9 +45,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'modules', ['Semester'])
 
-        # Adding unique constraint on 'Semester', fields ['user']
-        db.create_unique(u'modules_semester', ['user_id'])
-
         # Adding model 'UserModule'
         db.create_table(u'modules_usermodule', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -55,9 +52,6 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='usermodule', blank=True, to=orm['auth.User'])),
         ))
         db.send_create_signal(u'modules', ['UserModule'])
-
-        # Adding unique constraint on 'UserModule', fields ['user']
-        db.create_unique(u'modules_usermodule', ['user_id'])
 
         # Adding model 'Semester_UserModule_Link'
         db.create_table(u'modules_semester_usermodule_link', (
@@ -68,9 +62,6 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'modules', ['Semester_UserModule_Link'])
 
-        # Adding unique constraint on 'Semester_UserModule_Link', fields ['user']
-        db.create_unique(u'modules_semester_usermodule_link', ['user_id'])
-
         # Adding model 'UserProfile'
         db.create_table('user_profile', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -80,15 +71,6 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'Semester_UserModule_Link', fields ['user']
-        db.delete_unique(u'modules_semester_usermodule_link', ['user_id'])
-
-        # Removing unique constraint on 'UserModule', fields ['user']
-        db.delete_unique(u'modules_usermodule', ['user_id'])
-
-        # Removing unique constraint on 'Semester', fields ['user']
-        db.delete_unique(u'modules_semester', ['user_id'])
-
         # Deleting model 'Module'
         db.delete_table(u'modules_module')
 
@@ -171,20 +153,20 @@ class Migration(SchemaMigration):
             'prerequisite': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         },
         u'modules.semester': {
-            'Meta': {'unique_together': "(('user',),)", 'object_name': 'Semester'},
+            'Meta': {'object_name': 'Semester'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'semester_name': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'semester'", 'blank': 'True', 'to': u"orm['auth.User']"})
         },
         u'modules.semester_usermodule_link': {
-            'Meta': {'unique_together': "(('user',),)", 'object_name': 'Semester_UserModule_Link'},
+            'Meta': {'object_name': 'Semester_UserModule_Link'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'semester': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.Semester']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'link'", 'blank': 'True', 'to': u"orm['auth.User']"}),
             'usermodule': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.UserModule']"})
         },
         u'modules.usermodule': {
-            'Meta': {'unique_together': "(('user',),)", 'object_name': 'UserModule'},
+            'Meta': {'object_name': 'UserModule'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'module': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.Module']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'usermodule'", 'blank': 'True', 'to': u"orm['auth.User']"})
