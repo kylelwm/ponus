@@ -29,11 +29,6 @@ def sorttable(request):
 def addmodule(request):
 	context = RequestContext(request)
 	usermodules = UserModule.objects.filter(user=request.user)
-	semesterusermodulelink = Semester_UserModule_Link.objects.filter(user=request.user)
-	#CREATE SEMESTER IF IT DOESN'T EXIST STILL
-	if not Semester.objects.filter(user=request.user).exists():
-		for x in range(1, 7):
-			Semester.objects.create(semester_name='Semester ' + str(x), user=request.user)
 
 	if request.method == 'POST':
 		form = Module_Form(request.POST)
@@ -47,14 +42,14 @@ def addmodule(request):
 				obj.user = User.objects.get(username__exact='Ming')
 			form.save()
 
-			return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules, 'semesterusermodulelink':semesterusermodulelink}, context)
+			return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules}, context)
 	else:
 		form = Module_Form()
-	return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules, 'semesterusermodulelink':semesterusermodulelink}, context)
+	return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules}, context)
 
 def update(request):
 	context = RequestContext(request)
 	if request.method == 'GET':
-		request.GET['']
+		request.GET.get()
 		
 		return render(request, 'modules/index.html', context)	

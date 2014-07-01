@@ -37,30 +37,14 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'modules', ['Lesson'])
 
-        # Adding model 'Semester'
-        db.create_table(u'modules_semester', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('semester_name', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='semester', blank=True, to=orm['auth.User'])),
-        ))
-        db.send_create_signal(u'modules', ['Semester'])
-
         # Adding model 'UserModule'
         db.create_table(u'modules_usermodule', (
             (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('module', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['modules.Module'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='usermodule', blank=True, to=orm['auth.User'])),
+            ('link', self.gf('django.db.models.fields.CharField')(default='pal', max_length=10)),
         ))
         db.send_create_signal(u'modules', ['UserModule'])
-
-        # Adding model 'Semester_UserModule_Link'
-        db.create_table(u'modules_semester_usermodule_link', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('usermodule', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['modules.UserModule'])),
-            ('semester', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['modules.Semester'])),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='link', blank=True, to=orm['auth.User'])),
-        ))
-        db.send_create_signal(u'modules', ['Semester_UserModule_Link'])
 
         # Adding model 'UserProfile'
         db.create_table('user_profile', (
@@ -77,14 +61,8 @@ class Migration(SchemaMigration):
         # Deleting model 'Lesson'
         db.delete_table(u'modules_lesson')
 
-        # Deleting model 'Semester'
-        db.delete_table(u'modules_semester')
-
         # Deleting model 'UserModule'
         db.delete_table(u'modules_usermodule')
-
-        # Deleting model 'Semester_UserModule_Link'
-        db.delete_table(u'modules_semester_usermodule_link')
 
         # Deleting model 'UserProfile'
         db.delete_table('user_profile')
@@ -152,22 +130,10 @@ class Migration(SchemaMigration):
             'preclusion': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'prerequisite': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         },
-        u'modules.semester': {
-            'Meta': {'object_name': 'Semester'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'semester_name': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'semester'", 'blank': 'True', 'to': u"orm['auth.User']"})
-        },
-        u'modules.semester_usermodule_link': {
-            'Meta': {'object_name': 'Semester_UserModule_Link'},
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'semester': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.Semester']"}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'link'", 'blank': 'True', 'to': u"orm['auth.User']"}),
-            'usermodule': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.UserModule']"})
-        },
         u'modules.usermodule': {
             'Meta': {'object_name': 'UserModule'},
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'link': ('django.db.models.fields.CharField', [], {'default': "'pal'", 'max_length': '10'}),
             'module': ('django.db.models.fields.related.ForeignKey', [], {'to': u"orm['modules.Module']"}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'usermodule'", 'blank': 'True', 'to': u"orm['auth.User']"})
         },

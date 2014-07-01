@@ -43,27 +43,14 @@ class Lesson(models.Model):
 	Venue = models.CharField(max_length=50)
 	module = models.ForeignKey(Module)
 
-class Semester(models.Model):
-	def __str__(self):
-		return self.semester_name
-	
-	semester_name = models.CharField(max_length=20, null=True, blank=True)
-	user = models.ForeignKey(User, blank=True, related_name="semester")
-
 class UserModule(models.Model):
 	def __str__(self):
 		return self.module.module_code
 
 	module = models.ForeignKey(Module)
 	user = models.ForeignKey(User, blank=True, related_name="usermodule")
-
-#LINK BTWN SEMESTER AND USERMODULES IDENTIFIED BY USER
-class Semester_UserModule_Link(models.Model):
-	def __str__(self):
-		return self.semester.semester_name +  " / " + self.usermodule.module.module_code
-	usermodule = models.ForeignKey(UserModule)
-	semester = models.ForeignKey(Semester)
-	user = models.ForeignKey(User, blank=True, related_name="link")
+	#links may only be 'sem1', 'sem2' and so on or 'pal' for palette
+	link = models.CharField(max_length=10, default='pal')
 
 #TO CREATE USERMODULES
 class Module_Form(forms.ModelForm):
@@ -71,7 +58,7 @@ class Module_Form(forms.ModelForm):
 	
 	class Meta:
 		model = UserModule
-		exclude = ('user',)
+		exclude = ('user', 'link')
 		
 #FACEBOOK EDIT
 class UserProfile(models.Model):
