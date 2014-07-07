@@ -20,7 +20,9 @@ class Module(models.Model):
 	module_title = models.CharField(max_length=200, null=True, blank=True)
 	
 	department = models.CharField(max_length=50, null=True, blank=True)
-	
+
+	faculty = models.CharField(max_length=50, null=True, blank=True)
+
 	module_description = models.TextField(null=True, blank=True)
 	
 	module_credit = models.FloatField(null=True, blank=True)
@@ -51,6 +53,7 @@ class UserModule(models.Model):
 	user = models.ForeignKey(User, blank=True, related_name="usermodule")
 	#links may only be 'sem1', 'sem2' and so on or 'pal' for palette
 	link = models.CharField(max_length=10, default='pal')
+	unique_together = (("user", "module"),)
 
 #TO CREATE USERMODULES
 class Module_Form(forms.ModelForm):
@@ -59,7 +62,7 @@ class Module_Form(forms.ModelForm):
 	class Meta:
 		model = UserModule
 		exclude = ('user', 'link')
-		
+
 #FACEBOOK EDIT
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')

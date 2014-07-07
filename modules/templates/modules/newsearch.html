@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% extends "index.html" %}
+{% load staticfiles %}
+
+{% block head %}{% endblock %}
+
+{% block content %}
+
+<style>
+	#moduleslist{height:400px; width:450px;}
+	#moduleslist{overflow:hidden; overflow-y:scroll; list-style-type: none; padding:0; margin:0;}
+	.search{width:250px;}
+	#list{position:absolute; top:150px; left:5px;}
+	#selectiondiv{position:absolute; top:475px; left:5px;}
+	.module{font-size:17px;}
+	#selectionhead{position:absolute; top:450px; left:10px;}
+</style>
+
+<div id = "list">
+	<input class="search" placeholder = "Search a module by name"/>
+	<ul id = "moduleslist" class = "list">
+		{% for m in moduleslist %}
+		<li>
+			<h1 class='module'>{{ m.module_code}} : {{ m.module_title}}</h1>
+			<p hidden class ='faculty'>{{m.faculty}}</p>
+			<button type="button">Add</button>
+			<button type="button">More info</button>
+		</li>
+		{% endfor %}
+	</ul>
+
+
+	<div id = "selectionhead"><strong>Filter by Faculty</strong></div>
+	<select onChange="filter(this);" id="selectiondiv">
+		<option value="FASS">Faculty of Arts and Social Sciences<br>
+	 	<option value="DENTISTRY">Faculty of Dentistry<br>
+	 	<option value="ENGINE">Faculty of Engineering<br>
+	 	<option value="BUSINESS">NUS Business School<br>
+ 	 	<option value="SOC">School of Computing<br>
+ 	 	<option value="SDE">School of Design & Environment<br>
+ 	 	<option value="MEDICINE">Yong Loo Lin School Of Medicine<br>
+ 	 	<option value="OTHER">Others<br>
+ 	 	<option value="SHOWALL">Show all<br>
+</div>
+
+<script src="http://listjs.com/no-cdn/list.js"></script>
+
+<script type="text/javascript">
+//Specifying the attributes of my list.js list
+var options = {
+	valueNames: [ 'module', 'faculty']
+};
+var moduleslist = new List('list', options);
+
+function filter(elem) {
+
+	var selected = elem.value;
+	
+	if(selected == "SHOWALL") {
+		moduleslist.filter(function(item) {
+			return true;
+		});
+	}
+	else {
+		moduleslist.filter(function(item) {
+	   	 if (item.values().faculty == selected) {
+	 	     return true;
+	 	   } else { 
+	 	     return false;
+	 	   }
+	  	});
+	}
+}
+		
+</script>
+
+{% endblock %}
+{% block title %}{% endblock %}

@@ -28,7 +28,11 @@ def sorttable(request):
 	
 def addmodule(request):
 	context = RequestContext(request)
-	usermodules = UserModule.objects.filter(user=request.user)
+	#Try to retrieve usermodules base on request.user, but user is not authenticated yet
+	try: 
+		usermodules = UserModule.objects.filter(user=request.user)
+	except:
+		usermodules = UserModule.objects.none()
 
 	if request.method == 'POST':
 		form = Module_Form(request.POST)
@@ -39,8 +43,13 @@ def addmodule(request):
 			if request.user.is_authenticated():
 				obj.user = request.user
 			else:
-				obj.user = User.objects.get(username__exact='Ming')
-			form.save()
+				obj.user = User.objects.get(username__exact='default')
+
+			try:
+				usermodule = UserModule.objects.get(module = obj.module, user=obj.user)
+
+			except:
+				form.save()
 
 			return render_to_response('addmodule.html', {'form': form, 'usermodules':usermodules}, context)
 	else:
@@ -50,6 +59,16 @@ def addmodule(request):
 def update(request):
 	context = RequestContext(request)
 	if request.method == 'GET':
-		request.GET.get()
-		
-		return render(request, 'modules/index.html', context)	
+		fromwhere = request.GET.get('fromwhere')
+		towhere = request.GET.get('towhere')
+		targetmodule = Module.objects.get(module_code = request.GET.get('module'))
+		usermodule = UserModule.objects.get(module = targetmodule, user = request.user)
+		usermodule.link = towhere
+		usermodule.save()
+
+		return render(request, 'modules/addmodule.html', context)
+
+def newsearch(request):
+	moduleslist = Module.objects.all()
+	context = {'moduleslist': moduleslist}
+	return render(request, 'modules/newsearch.html', context)

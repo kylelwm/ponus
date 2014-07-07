@@ -88,7 +88,7 @@
 
   <div id="palette">
   {% if usermodules %}
-   <ul id = "usermodules" class="items">
+   <ul id = "pal" class="items">
       Palette
    {% for m in usermodules %}
       {% if m.link == 'pal' %}
@@ -113,7 +113,7 @@
 $(function () {
         var fromwhere, towhere, module;
 
-        $("#usermodules,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").sortable({
+        $("#pal,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").sortable({
                 connectWith: ".items",
                 start: function (event, ui) {
                   ui.item.toggleClass("highlight");
@@ -123,15 +123,18 @@ $(function () {
                 stop: function (event, ui) {
                   ui.item.toggleClass("highlight");
                   towhere = ui.item.closest('ul').attr('id');
-                  alert("Module: " + module + " has been shifted from " + fromwhere + " to " + towhere)
-                  $.ajax({
-                    data: {from: fromwhere, to: towhere, module: module},
-                    type: 'GET',
-                    url: 'modules/update'
-                  });
+
+                  if(fromwhere!=towhere) {
+                    alert("Module: " + module + " has been shifted from " + fromwhere + " to " +  towhere)
+                   $.ajax({
+                      data: {fromwhere: fromwhere, towhere: towhere, module: module},
+                      type: 'GET',
+                      url: '/modules/update'
+                   });
+                  }
                 }
         });
-        $("#usermodules,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").disableSelection();
+        $("#pal,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6").disableSelection();
 });
 </script>
 
