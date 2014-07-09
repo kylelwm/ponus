@@ -5,6 +5,7 @@ from django.template import RequestContext
 from django import forms
 from django.contrib.auth.models import User
 from django.db.models.query import EmptyQuerySet
+from django.http import HttpResponse
 
 # Create your views here.
 
@@ -72,3 +73,70 @@ def newsearch(request):
 	moduleslist = Module.objects.all()
 	context = {'moduleslist': moduleslist}
 	return render(request, 'modules/newsearch.html', context)
+
+def home(request):
+	context = RequestContext(request)
+	moduleslist = Module.objects.all()
+	#Try to retrieve usermodules base on request.user, but user is not authenticated yet
+	try: 
+		usermodules = UserModule.objects.filter(user=request.user)
+	except:
+		usermodules = UserModule.objects.none()
+
+	return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+
+def newmodule(request):
+	context = RequestContext(request)
+
+	moduleslist = Module.objects.all()
+	#Try to retrieve usermodules base on request.user, but user is not authenticated yet
+	try: 
+		usermodules = UserModule.objects.filter(user=request.user)
+	except:
+		usermodules = UserModule.objects.none()
+
+	if request.method == 'GET':
+		creator = request.user
+		selectedToAdd = request.GET.get('chosen')
+		selectedModule = Module.objects.get(module_code=selectedToAdd)
+		try:
+			usermodule = UserModule.objects.get(module=selectedModule, user=creator)
+		except:
+			usermodule = UserModule(module=selectedModule, user=creator, link="pal")
+			usermodule.save()
+
+		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+	else:
+		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+
+def deletemodule(request):
+	context = RequestContext(request)
+
+	moduleslist = Module.objects.all()
+	#Try to retrieve usermodules base on request.user, but user is not authenticated yet
+	try: 
+		usermodules = UserModule.objects.filter(user=request.user)
+	except:
+		usermodules = UserModule.objects.none()
+
+	if request.method == 'GET':
+		destroyer = request.user
+		selectedToDel = request.GET.get('chosen')
+		selectedModule = Module.objects.get(module_code=selectedToDel)
+		usermodule = UserModule.objects.get(module=selectedModule, user=destroyer)
+		usermodule.delete()
+
+		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+	else:
+		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+
+def palette(request):
+
+	context = RequestContext(request)
+
+	try: 
+		usermodules = UserModule.objects.filter(user=request.user)
+	except:
+		usermodules = UserModule.objects.none()
+
+	return render_to_response('palette.html', {'usermodules':usermodules}, context)

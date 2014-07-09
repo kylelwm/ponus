@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+{% block head %}
+    <head>
+       <link rel="stylesheet" href="{% static "metro/css/metro-bootstrap.css"%}">
+       <link href="{% static "metro/docs/css/iconFont.css"%}" rel="stylesheet">
+
+    <style> 
+    ul{margin: 0;
+         list-style-type: none;
+         overflow-y:auto;
+         height:350px;
+         width:345px;
+         padding-top:3px;
+         padding-bottom:10px;}
+    
+    li{
+            cursor: pointer;
+            border-radius: 3px;
+            padding:8px 5px 7px 5px;}
+
+    #listouter {width:365px;}
+
+    #semesters, #leftsidepage {float:left;}
+
+    #semesters {width:1530px;}
+
+    #semester {float:left; width:380px;}
+
+    .listview {position:relative; right:3px; top:5px;}
+
+
+    </style>  
+    </head>
+
+    
+
+{% endblock %}
+
+    <body class="metro">
+       <!-- Top nav bar -->
+        <nav class="navigation-bar dark">
+            <nav class="navigation-bar-content">
+               <a class="element brand" href="/modules/home"><span class="icon-home on-left"></span>Path of NUS</a>
+
+              <span class="element-divider"></span>
+
+              <a class="element brand" href="/modules/modulelist.html"><span class="icon-list on-left"></span>Module list</a>
+
+              <span class="element-divider"></span>
+
+              <div class="element">
+                <a class="dropdown-toggle" href="#">Other useful links</a>
+                <ul class="dropdown-menu" data-role="dropdown">
+                   <li><a href="http://www.nus.edu.sg/" target=")blank">NUS Main</a></li>
+                   <li><a href="http://ivle.nus.edu.sg/" target=")blank">IVLE</a></li>
+                   <li><a href="http://www.nus.edu.sg/cors/" target=")blank">CORS</a></li>
+                   <li><a href="http://nusmods.com/" target=")blank">NUSmods</a></li>
+                   <li><a href="http://www.corspedia.com/" target=")blank">Corspedia</a></li>
+                </ul>
+              </div>
+
+
+
+
+
+
+               <!-- Facebook login -->
+                <div class='facebook place-right'>
+                  <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
+                  {% include 'django_facebook/_facebook_js.html' %}
+                      <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
+                          <input type="hidden" value="{{ request.path }}" name="next" />
+                          <input type="hidden" value="{{ request.path }}" name="register_next" />
+                         <input type="hidden" value="{{ request.path }}" name="error_next" />
+                         {% csrf_token %}
+                          <input onclick="F.connect(this.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" />
+                     </form>
+                </div>
+
+            </nav>
+        </nav>
+
+        <!-- The real fun starts now! -->
+    <div id="leftsidepage">
+        <!-- PALETTE -->
+        <div id="palettehtml">
+        {% include 'palette.html' %}
+        <!-- SEARCH AND MODULE LIST -->
+        </div>
+        <div class="listview small">
+            <div class = "metrolist" id="listouter">
+                <div id="moduleslist" class="list-content">
+
+                  <!--TEXTBOX FOR SEARCH-->
+
+                    <span id = "selectionhead"><strong>Select modules</strong></span>
+
+                    <div class="input-control text">
+                        <input class="search" type="text" value="" placeholder="Search a module by name or code"/>
+                    </div>
+
+                    <span id = "selectionhead"><strong>Filter by Faculty</strong></span>
+
+                    <div class="input-control select">
+                        <select onchange="filtermod(this);" id="selectiondiv">
+                            <option value="SHOWALL">Show all<br>
+                            <option value="FASS">Faculty of Arts and Social Sciences<br>
+                            <option value="DENTISTRY">Faculty of Dentistry<br>
+                            <option value="ENGINE">Faculty of Engineering<br>
+                            <option value="BUSINESS">NUS Business School<br>
+                            <option value="SOC">School of Computing<br>
+                            <option value="SDE">School of Design & Environment<br>
+                            <option value="MEDICINE">Yong Loo Lin School Of Medicine<br>
+                        </select>
+                    </div>
+
+
+
+                    {% if moduleslist %}
+                    <ul class="list">
+                    <strong>Module List</strong>
+                    {% for m in moduleslist %}
+                         <li class="metrolist">  
+
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="newmodule(this)" value="{{m.module_code}}"><i class="icon-plus-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                             </div>
+                             <span class="list-title">{{ m.module_code }}</span>
+                             <span class="list-remark">{{ m.module_title}}</span>
+                             <span class="list-remark">{{ m.module_credit}}MCS</span>
+                             <p hidden class="module">{{m.module_code}}</p>
+                             <p hidden class="faculty">{{m.faculty}}</p>
+                             <p hidden class="title">{{m.module_title}}</p>
+                             
+                         </li>
+                    {% endfor %}
+                    </ul>
+                   {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- 200 lines of html just for the left side...now comes the middle section-->
+<div id="semesters">
+    
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 1 Sem 1
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem1" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem1' %}
+                            <li id='sem1_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 1 Sem 2
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem2" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem2' %}
+                            <li id='sem2_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 2 Sem 1
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem3" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem3' %}
+                            <li id='sem3_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 2 Sem 2
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem4" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem4' %}
+                            <li id='sem4_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 3 Sem 1
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem5" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem5' %}
+                            <li id='sem5_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 3 Sem 2
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem6" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem6' %}
+                            <li id='sem6_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 4 Sem 1
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem7" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem7' %}
+                            <li id='sem7_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id = "semester" class="panel">
+        <div class="panel-header">
+            Year 4 Sem 2
+        </div>
+        <div class="panel-content">
+            <div class="listview small">
+                <div class="metrolist" id="listouter">
+                    <div class="list-content">
+                        <ul id = "sem8" class="list items">
+                        {% for m in usermodules %}
+                        {% if m.link == 'sem8' %}
+                            <li id='sem8_{{ forloop.counter }}' class="metrolist">
+                                <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                            </li>
+                        {% endif %}
+                        {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Strangely the script for list.js MUST be placed after the list, not before -->
+<script src="{% static "metro/docs/js/jquery/jquery.min.js"%}"></script>
+<script src="{% static "metro/docs/js/jquery/jquery.widget.min.js"%}"></script>
+<script src="{% static "metro/docs/js/metro.min.js"%}"></script>
+<script src="{% static "metro/docs/js/metro/metro-dropdown.js"%}"></script>
+<script src="{%static "js/list.js"%}"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script type="text/javascript" src="http://www.pureexample.com/js/lib/jquery.ui.touch-punch.min.js"></script>
+
+<script>
+
+//LIST.JS
+//Specifying the attributes of my list.js list
+var options = {
+        valueNames: [ 'module', 'faculty', 'title']
+    };
+var moduleslist = new List('moduleslist', options);
+
+function filtermod(elem) {
+
+    var selected = elem.value;
+  
+    if(selected == "SHOWALL") {
+        moduleslist.filter(function(item) {
+            return true;
+        });
+    }
+
+    else {
+        moduleslist.filter(function(item) {
+            if (item.values().faculty == selected) {
+                return true;
+            } else { 
+                return false;
+            }
+        });
+    }
+}
+
+//FUNCTION TO ADD MODULE
+function newmodule(elem) {
+            var chosen = elem.value;
+            var alreadyHave = false;
+            //LOOP THROUGH ALL USERMODULES IF CANNOT FIND THIS THEN WE DO AJAX
+            
+            $('#pal').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem1').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem2').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem3').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem4').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem5').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem6').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem7').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            $('#sem8').children('li').each(function () {
+                    if($(this).children(".list-title").text() == chosen) {
+                        alreadyHave = true;
+                    } // "this" is the current element in the loop
+            });
+
+            if(!alreadyHave) {
+                                        //Add into palette manually
+                    $("#pal ul").append("<li class='metrolist'><span>test</span></li>");
+                    $.ajax({
+                            data: {chosen:chosen},
+                            type: 'GET',
+                            url: '/modules/newmodule'
+                            //on success, UPDATE palette
+                    }).done(
+                            function(data){
+                                $('#palettehtml').load('/modules/palette', function() {
+                                    sortable();
+                                });
+                            });
+            }
+}
+
+function deletemodule(elem) {
+            var chosen = elem.value;
+            $(elem).parent().parent().remove();
+            $.ajax({
+                    data: {chosen:chosen},
+                    type: 'GET',
+                    url: '/modules/deletemodule'
+            });
+}
+
+function sortable() {
+        var fromwhere, towhere, module;
+
+        $("#pal,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6,#sem7,#sem8").sortable({
+                connectWith: ".items",
+                start: function (event, ui) {
+                  ui.item.toggleClass("highlight");
+                  fromwhere = ui.item.closest('ul').attr('id');
+                  module = ui.item.children(".list-title").text();
+                },
+                stop: function (event, ui) {
+                  ui.item.toggleClass("highlight");
+                  towhere = ui.item.closest('ul').attr('id');
+
+                  if(fromwhere!=towhere) {
+                   $.ajax({
+                      data: {fromwhere: fromwhere, towhere: towhere, module: module},
+                      type: 'GET',
+                      url: '/modules/update'
+                   });
+                  }
+                }
+        });
+        $("#pal,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6,#sem7,#sem8").disableSelection();
+}
+
+$(document).ready ( function(){
+   sortable();
+});
+
+</script>
+
+    </body>
+</html>

@@ -1,0 +1,29 @@
+<!-- html file for palette modules -->
+        <div class="listview small">
+            <div class="metrolist" id="listouter">
+                <div class="list-content">
+                    {% if usermodules %}
+                    <ul id = "pal" class="list items">
+                    <strong>Palette</strong>
+                    {% for m in usermodules %}
+                    {% if m.link == 'pal' %}
+                         <li id = "pal_{{ forloop.counter }}"class="metrolist">  
+                             <!-- DELETE BUTTON -->
+                             <div class="toolbar transparent small place-right">
+                                 <button onclick="deletemodule(this)" value="{{m.module.module_code}}"><i class="icon-cancel-2 on-left"></i></button>
+                             </div>
+                             <div class="toolbar transparent small place-right">
+                                 <button><i class="icon-search on-left"></i></button>
+                              </div>
+
+                             <span class="list-title">{{ m.module.module_code }}</span>
+                             <span class="list-remark">{{ m.module.module_title}}</span>  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>                                  
+                          </li>
+                    {% endif %}
+                    {% endfor %}
+                    </ul>
+                   {% endif %}
+                </div>
+            </div>
+        </div>

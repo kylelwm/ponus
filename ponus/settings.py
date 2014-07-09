@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
+import dj_database_url
 # To solve the no handlers for django_facebook problem
 import logging
 
@@ -46,7 +47,7 @@ DEBUG = True
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 SITE_ID = 1
 
