@@ -1,8 +1,8 @@
 from django.db import models
 from django import forms
 from django.contrib.auth.models import User
-from allauth.account.models import EmailAddress
-from allauth.socialaccount.models import SocialAccount
+#from allauth.account.models import EmailAddress
+#from allauth.socialaccount.models import SocialAccount
 from django_facebook import *
 import hashlib
 
@@ -34,6 +34,12 @@ class Module(models.Model):
 	exam_date = models.CharField(max_length=200, null=True, blank=True)
 	
 	exam_duration = models.CharField(max_length=50, null=True, blank=True)
+
+	preclu = models.CharField(max_length=50, null=True, blank=True)
+
+	prereqAnd = models.CharField(max_length=50, null=True, blank=True)
+
+	prereqOr = models.CharField(max_length=50, null=True, blank=True)
 		
 class Lesson(models.Model):
 	ClassNo = models.CharField(max_length=50)
@@ -63,6 +69,16 @@ class Module_Form(forms.ModelForm):
 		model = UserModule
 		exclude = ('user', 'link')
 
+#Creating USERFORM
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password')
+
+
+
 #FACEBOOK EDIT
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name='profile')
@@ -89,29 +105,3 @@ class UserProfile(models.Model):
 
  
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
-	
-	

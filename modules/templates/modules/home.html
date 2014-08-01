@@ -7,7 +7,7 @@
        <link href="{% static "metro/docs/css/iconFont.css"%}" rel="stylesheet">
 
     <style> 
-    ul{margin: 0;
+    .list-content ul{margin: 0;
          list-style-type: none;
          overflow-y:auto;
          height:340px;
@@ -15,7 +15,7 @@
          padding-top:3px;
          padding-bottom:10px;}
     
-    li{
+    .list li{
             cursor: pointer;
             border-radius: 3px;
             padding:6px 5px 7px 5px;}
@@ -34,6 +34,8 @@
 
     .listview {position:relative; right:3px; top:5px;}
 
+    .login {position:relative; top:8px; right:10px;}
+
 
     </style>  
     </head>
@@ -46,7 +48,7 @@
        <!-- Top nav bar -->
         <nav class="navigation-bar dark">
             <nav class="navigation-bar-content">
-               <a class="element brand" href="/modules/home"><span class="icon-home on-left"></span>Path of NUS</a>
+               <a class="element brand" href="/modules/main"><span class="icon-home on-left"></span>Path of NUS</a>
 
               <span class="element-divider"></span>
 
@@ -65,24 +67,21 @@
                 </ul>
               </div>
 
-
-
-
-
-
-               <!-- Facebook login -->
-                <div class='facebook place-right'>
-                  <link href="{{ STATIC_URL }}django_facebook/css/facebook.css" type="text/css" rel="stylesheet" media="all" />
-                  {% include 'django_facebook/_facebook_js.html' %}
-                      <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
-                          <input type="hidden" value="{{ request.path }}" name="next" />
-                          <input type="hidden" value="{{ request.path }}" name="register_next" />
-                         <input type="hidden" value="{{ request.path }}" name="error_next" />
-                         {% csrf_token %}
-                          <input onclick="F.connect(this.parentNode); return false;" type="image" src="{{ STATIC_URL }}django_facebook/images/facebook_login.png" />
-                     </form>
-                </div>
-
+              <div class="login place-right">
+                {% if user.is_authenticated %}
+                  <form action="/modules/logout">
+                    {% csrf_token %}
+                    Welcome {{ user.firstName }} {{user.lastName}} to Path of NUS <input type="submit" value="Log Out">
+                  </form>
+                {% else %}
+                  <form id="login_form" method = "post" action="/modules/login/">
+                    {% csrf_token %}
+                    Username: <input type="text" name="username" value="" size="25" />
+                    Password: <input type="password" name="password" value="" size="25" />
+                    <input type="submit" value="Log in" />
+                  </form>
+                {% endif %}
+              </div>
             </nav>
         </nav>
     <div id="mainstuff">
@@ -176,6 +175,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
 
                         {% endif %}
@@ -210,6 +218,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -243,6 +260,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -276,6 +302,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -309,6 +344,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -342,6 +386,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -374,6 +427,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -406,6 +468,15 @@
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
                              <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}
                             </li>
                         {% endif %}
                         {% endfor %}
@@ -554,6 +625,7 @@ function deletemodule(elem) {
                     type: 'GET',
                     url: '/modules/deletemodule'
             });
+            checkPre();
 }
 
 function sortable() {
@@ -577,13 +649,99 @@ function sortable() {
                       url: '/modules/update'
                    });
                   }
+                  checkPre();
                 }
         });
         $("#pal,#sem1,#sem2,#sem3,#sem4,#sem5,#sem6,#sem7,#sem8").disableSelection();
 }
 
+function checkPre() {
+    var preclu = "";
+    var prereqOr = "";
+    var prereqAnd = "";
+    var precluBool = true;
+    var prereqOrBool = false;
+    var prereqAndBool = true;
+    var checkModule = "";
+    var currentModule = "";
+    var easyReference = 0;
+    var currentEasyReference = 0;
+    var allSemMods = $("#semesters li");
+    allSemMods.each(function(index){
+      if($(this).children(".preclu").text().length > 0) {
+        preclu = $(this).children(".preclu").text();
+      }
+      else {preclu = ""}
+
+      if($(this).children(".prereqOr").text().length > 0) {
+        prereqOr = $(this).children(".prereqOr").text();
+      }
+      else {prereqOr= ""}
+
+      if($(this).children(".prereqAnd").text().length > 0) {
+        prereqAnd = $(this).children(".prereqAnd").text();
+      }
+      else {prereqAnd = ""}
+
+      checkModule = $(this).children(".list-title").text();
+      precluBool = true;
+      prereqOrBool = false;
+      prereqAndBool = true;
+      easyReference = $(this).parent().attr("id").charAt(3);
+      
+      allSemMods.each(function(index){
+        currentModule = $(this).children(".list-title").text();
+        currentEasyReference = $(this).parent().attr("id").charAt(3);
+        if(currentEasyReference < easyReference) {
+          if(currentModule != checkModule) {
+            if(prereqAnd.indexOf(currentModule)>-1) {
+              prereqAnd = prereqAnd.replace(currentModule, "");
+            }
+            if(prereqOr.indexOf(currentModule)>-1) {
+                //alert("entered");
+              prereqOrBool = true;
+            }
+          }
+        }
+        if(currentEasyReference <= easyReference) {
+          if(currentModule != checkModule) { 
+            if(preclu.indexOf(currentModule)>-1) {
+              //alert("Entered precluBool!" + preclu + " has " + currentModule)
+              precluBool = false;
+            }
+          }
+        }
+      });
+      if(prereqAnd.search(/[A-Z]{2,3}[0-9]{4}[A-Z]*/i) > -1) {
+        prereqAndBool = false;
+      }
+
+      if(prereqOr.length <= 2) {
+        //alert("entered with prereqOr.length = " + prereqOr.length + " and prereqOr being " + prereqOr);   
+        prereqOrBool = true;
+      }
+
+      if(prereqAndBool && prereqOrBool && precluBool) {
+        //alert("Prerequities and preclusions for " + checkModule + " is met!");
+        if($(this).hasClass( "text-warning")) {
+            $(this).removeClass( "text-warning");
+        }
+        $(this).addClass( "text-success" );
+      } 
+      else {
+        //alert("For "+ checkModule + ": prereqAndBool = "+prereqAndBool+", prereqOrBool = "+prereqOrBool+", precluBool = "+precluBool);
+        //alert("prereqAnd = " + prereqAnd + ", prereqOr = " + prereqOr + ", preclu = " + preclu);
+        if($(this).hasClass( "text-success")) {
+            $(this).removeClass( "text-success");
+        }
+        $(this).addClass( "text-warning" );
+      }
+    });
+}
+
 $(document).ready ( function(){
-   sortable();
+    sortable();
+    checkPre();
 });
 
 </script>

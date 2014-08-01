@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+{% block head %}
+    <head>
+       <link rel="stylesheet" href="{% static "metro/css/metro-bootstrap.css"%}">
+       <link href="{% static "metro/docs/css/iconFont.css"%}" rel="stylesheet">
+
+    <style> 
+    .list-content ul{margin: 0;
+         list-style-type: none;
+         overflow-y:auto;
+         height:340px;
+         width:330px;
+         padding-top:3px;
+         padding-bottom:10px;}
+    
+    .list li{
+            cursor: pointer;
+            border-radius: 3px;
+            padding:6px 5px 7px 5px;}
+
+    #listouter {width:345px;}
+
+    #mainstuff {width: 1900px;}
+
+    #semesters, #leftsidepage {display:inline-block;}
+
+    /*#semesters {width:1530px;}*/
+    #leftsidepage {width:345px;}
+    #semesters {width:1530px;}
+
+    #semester {float:left; width:360px;}
+
+    .listview {position:relative; right:3px; top:5px;}
+
+    .login {position:relative; top:8px; right:10px;}
+
+    #aboutPonus, #register {display:inline-block;}
+    #aboutPonus {margin: 25px 0px 0px 25px; width:930px;}
+    #register {position:absolute; top: 80px; width:930px;}
+
+    </style>  
+    </head>
+
+    
+
+{% endblock %}
+
+    <body class="metro">
+       <!-- Top nav bar -->
+        <nav class="navigation-bar dark">
+            <nav class="navigation-bar-content">
+               <a class="element brand" href="/modules/main"><span class="icon-home on-left"></span>Path of NUS</a>
+
+              <span class="element-divider"></span>
+
+              <a class="element brand" href="/modules/modulelist.html"><span class="icon-list on-left"></span>Module list</a>
+
+              <span class="element-divider"></span>
+
+              <div class="element">
+                <a class="dropdown-toggle" href="#">Other useful links</a>
+                <ul class="dropdown-menu" data-role="dropdown">
+                   <li><a href="http://www.nus.edu.sg/" target=")blank">NUS Main</a></li>
+                   <li><a href="http://ivle.nus.edu.sg/" target=")blank">IVLE</a></li>
+                   <li><a href="http://www.nus.edu.sg/cors/" target=")blank">CORS</a></li>
+                   <li><a href="http://nusmods.com/" target=")blank">NUSmods</a></li>
+                   <li><a href="http://www.corspedia.com/" target=")blank">Corspedia</a></li>
+                </ul>
+              </div>
+
+              <div class="login place-right">
+                {% if user.is_authenticated %}
+                  <form action="/modules/logout">
+                    {% csrf_token %}
+                    Welcome {{ user.firstName }} {{user.lastName}} to Path of NUS <input type="submit" value="Log Out">
+                  </form>
+                {% else %}
+                  <form id="login_form" method = "post" action="/modules/login/">
+                    {% csrf_token %}
+                    Username: <input type="text" name="username" value="" size="25" />
+                    Password: <input type="password" name="password" value="" size="25" />
+                    <input type="submit" value="Log in" />
+                  </form>
+                {% endif %}
+              </div>
+            </nav>
+        </nav>
+        <div id="aboutPonus">
+            <h1>Welcome to <font face="verdana" color="Orange">Path of <b>NUS</b></font></h1><br>
+            <h2>Start planning your graduation route in <b>NUS</b>! <br><b>No</b> more worrying about the many <b>pre-requisites and preclusions</b> <br>when bidding for your modules </h2><br>
+            <h1>About <font face="verdana" color="Orange">Path of <b>NUS</b></font></h1><br>
+            <h2>This is done by <i>Team Daedalus</i> for <strong>Orbital</strong> over the Summer of 2014.<br><br><strong>Orbital</strong> is the School of Computing's self-driven programming summer experience.  <br><br>It is  designed to give first-year students the opportunity to :<br><b>1. self-learn</b><br><b>2. build something useful.</b>  <br>It is designed as a <b>4</b> modular credit (MC) module that is taken pass/fail (CS/CU) over the summer.</h2>
+            <form action="http://orbital.comp.nus.edu.sg/">
+                <input type="submit" value="Learn more about Orbital here &raquo;">
+            </form>
+        </div>
+        <div id="register">
+            {% if user.is_authenticated %}
+            <h1><strong><font face="verdana" color="Orange">Hello {{user.firstName}} {{user.lastName}}!</font></strong><br /></h1>
+            <h2>Click here to start planning your modules now!</h2>
+            <form action="/modules/home">
+                <input type="submit" value="Start planning now &raquo;">
+            </form>
+
+            {% else %}
+            <h1><strong><font face="verdana" color="Orange">Register here!</font></strong><br /></h1>
+
+            <form id="user_form" method="post" action="/modules/main"
+                enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <!-- Display each form. The as_p method wraps each element in a paragraph
+                 (<p>) element. This ensures each element appears on a new line,
+                 making everything look neater. -->
+                {{ user_form.as_p }}
+                {{ profile_form.as_p }}
+
+                <!-- Provide a button to click to submit the form. -->
+                <input type="submit" name="submit" value="Register" />
+            </form>
+            {% endif %}
+        </div>
+
+<!-- Strangely the script for list.js MUST be placed after the list, not before -->
+<script src="{% static "metro/docs/js/jquery/jquery.min.js"%}"></script>
+<script src="{% static "metro/docs/js/jquery/jquery.widget.min.js"%}"></script>
+<script src="{% static "metro/docs/js/metro.min.js"%}"></script>
+<script src="{% static "metro/docs/js/metro/metro-dropdown.js"%}"></script>
+<script src="{%static "js/list.js"%}"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+<script type="text/javascript" src="http://www.pureexample.com/js/lib/jquery.ui.touch-punch.min.js"></script>
+    </body>
+</html>

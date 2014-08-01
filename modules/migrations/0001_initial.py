@@ -21,6 +21,9 @@ class Migration(SchemaMigration):
             ('preclusion', self.gf('django.db.models.fields.TextField')(null=True, blank=True)),
             ('exam_date', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('exam_duration', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('preclu', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('prereqAnd', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('prereqOr', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
         ))
         db.send_create_signal(u'modules', ['Module'])
 
@@ -129,7 +132,10 @@ class Migration(SchemaMigration):
             'module_credit': ('django.db.models.fields.FloatField', [], {'null': 'True', 'blank': 'True'}),
             'module_description': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
             'module_title': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'preclu': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'preclusion': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'}),
+            'prereqAnd': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'prereqOr': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'prerequisite': ('django.db.models.fields.TextField', [], {'null': 'True', 'blank': 'True'})
         },
         u'modules.usermodule': {

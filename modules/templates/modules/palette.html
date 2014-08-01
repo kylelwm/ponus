@@ -1,10 +1,10 @@
 <!-- html file for palette modules -->
+        <strong id = "heading" style = "margin-left:13px;">Palette</strong>
         <div class="listview small">
             <div class="metrolist" id="listouter">
                 <div class="list-content">
                     {% if usermodules %}
                     <ul id = "pal" class="list items">
-                    <strong>Palette</strong>
                     {% for m in usermodules %}
                     {% if m.link == 'pal' %}
                          <li id = "pal_{{ forloop.counter }}"class="metrolist">  
@@ -18,7 +18,16 @@
 
                              <span class="list-title">{{ m.module.module_code }}</span>
                              <span class="list-remark">{{ m.module.module_title}}</span>  
-                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>                                  
+                             <span class="list-remark">{{ m.module.module_credit}}MCS</span>
+                             {% if m.module.preclu %}
+                             <p hidden class="preclu">{{m.module.preclu}}</p>
+                             {% endif %}
+                             {% if m.module.prereqAnd %}
+                             <p hidden class="prereqAnd">{{m.module.prereqAnd}}</p>
+                             {% endif %}
+                             {% if m.module.prereqOr %}
+                             <p hidden class="prereqOr">{{m.module.prereqOr}}</p>
+                             {% endif %}                                  
                           </li>
                     {% endif %}
                     {% endfor %}
