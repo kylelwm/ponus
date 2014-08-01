@@ -111,9 +111,9 @@ def newmodule(request):
 			usermodule = UserModule(module=selectedModule, user=creator, link="pal")
 			usermodule.save()
 
-		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+		return render_to_response('home.html', {'usermodules':usermodules}, context)
 	else:
-		return render_to_response('home.html', {'usermodules':usermodules, 'moduleslist': moduleslist}, context)
+		return render_to_response('home.html', {'usermodules':usermodules}, context)
 
 def deletemodule(request):
 	context = RequestContext(request)
